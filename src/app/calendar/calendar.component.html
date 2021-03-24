@@ -1,0 +1,32 @@
+<div class="wrapper-calendar">
+  <div class="header-calendar">
+    <div>
+      <button (click)="changeMonth(-1)" class="btn btn-primary btn-sm">Antes</button>
+    </div>
+    <h1>{{dateSelect | date:'MMMM, yyyy' : 'UTC' | titlecase}}</h1>
+    <div>
+      <button (click)="changeMonth(1)" class="btn btn-primary btn-sm">Siguiente</button>
+    </div>
+  </div>
+  <ol>
+    <li *ngFor="let day of week" class="day-name">{{day | slice:0:3 | titlecase}}</li>
+
+    <li class="day" (click)="clickDay(day)" [style.gridColumnStart]="first ? day?.indexWeek : 'auto'"
+      *ngFor="let day of monthSelect;let first = first">
+      <span>{{day?.value}}</span>
+    </li>
+  </ol>
+</div>
+
+<div class="row">
+  <div class="col-md-12 text-center">
+    <button class="btn btn-primary btn-add">
+      <i class="bi bi-plus-circle"></i> Agergar evento
+    </button>
+  </div>
+</div>
+
+<hr>
+<div class="mb-5">
+  Fecha: {{dateValue | date}}
+</div>
