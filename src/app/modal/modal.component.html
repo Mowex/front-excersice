@@ -1,0 +1,29 @@
+<form [formGroup]="reminderForm" (ngSubmit)="saveReminder()" class="form-line-input">
+  <div class="modal-header">
+    <h4 class="modal-title">Agregar recordatorio</h4>
+  </div>
+  <div class="modal-body">
+    <div class="mb-3">
+      <label for="citu" class="form-label">Ciudad</label>
+      <input type="text" class="form-control" name="city">
+    </div>
+    <div class="mb-3">
+      <label for="color" class="form-label">Color</label>
+      <select name="color" class="form-control">
+        <option *ngFor="let color of colors" [value]="color.name">{{ color.name }}</option>
+      </select>
+    </div>
+    <div class="mb-3">
+      <label for="exampleInputPassword1" class="form-label">Fecha</label>
+      <input class="form-control" angular-mydatepicker name="date" formControlName="date" #dp="angular-mydatepicker" autocomplete="off" (click)="dp.toggleCalendar()" />
+    </div>
+    <div class="mb-3">
+      <label for="exampleInputPassword1" class="form-label">Fecha</label>
+      <input type="time" class="form-control" name="time" formControlName="time" />
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-dark" (click)="activeModal.close('Close click')">Cerrar</button>
+    <button type="submit" class="btn btn-outline-primary">Guardar</button>
+  </div>
+</form>
