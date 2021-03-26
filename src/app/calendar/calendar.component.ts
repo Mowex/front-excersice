@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ModalComponent } from '../modal/modal.component'
+import { Reminder } from '../classes/reminder';
+import { Action, Store } from '@ngrx/store';
+import { AppState } from '../classes/appState';
 import * as moment from 'moment'
 import 'moment/locale/es'
 
@@ -15,17 +18,15 @@ export class CalendarComponent implements OnInit {
   monthSelect: any[];
   dateSelect: any;
   dateValue: any;
-  reminders: any[] = [
-    { city: 'Xalapa', color: 'verde', date: '2021-03-25', time: '22:00 PM', text: 'Hola', day: 25}
-  ];
+  reminders: Reminder[];
 
-  constructor(public modalService: NgbModal) {
-  }
+  constructor(
+    public modalService: NgbModal,
+    private store: Store<AppState>
+  ) { }
 
   ngOnInit(): void {
-    console.log('reminder 0', moment(this.reminders[0].date).format('D'));
-
-    this.getDaysFromDate((moment().month()+1), moment().year())
+    this.getDaysFromDate((moment().month()+1), moment().year());
   }
 
   getDaysFromDate(month, year) {
@@ -36,7 +37,12 @@ export class CalendarComponent implements OnInit {
     const diffDays = endDate.diff(startDate, 'days', true)
     const numberDays = Math.round(diffDays);
 
-    console.log('Object.keys([...Array(numberDays)])', [...Array(numberDays).keys()]);
+    this.store.subscribe(state => {
+      console.log('state:::', state);
+      this.reminders = state.reminders;
+    })
+
+    // console.log('Object.keys([...Array(numberDays)])', [...Array(numberDays).keys()]);
 
     const arrayDays = Object.keys([...Array(numberDays)]).map((a: any) => {
       a = parseInt(a) + 1;
@@ -44,7 +50,6 @@ export class CalendarComponent implements OnInit {
       const reminder = this.reminders.filter((reminder) => {
         return a === parseInt(moment(reminder.date).format('D'))
       })[0]
-
 
       return {
         name: dayObject.format("dddd"),
@@ -54,15 +59,9 @@ export class CalendarComponent implements OnInit {
       };
     });
 
+    console.log('arrayDays:::', arrayDays);
+
     console.log('arrayDays', arrayDays);
-
-    /* var sentences = arrayDays.map(function (emp) {
-      var company = companies.filter(function (comp) {
-        return comp.id === emp.compId;
-      })[0];
-      return "Employee '" + emp.name + "' of Age " + emp.age + " is working in " + company.name;
-    }); */
-
     this.monthSelect = arrayDays;
   }
 

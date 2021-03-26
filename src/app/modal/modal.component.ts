@@ -1,6 +1,10 @@
 import { Component, OnInit, Input, Output } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Reminder } from '../classes/reminder';
+import { Action, Store } from '@ngrx/store';
+import { AppState } from '../classes/appState';
+import { AddReminder } from '../actions/reminder.actions';
 
 @Component({
   selector: 'app-modal',
@@ -9,13 +13,13 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 })
 export class ModalComponent implements OnInit {
 
-  @Input() reminder;
-  @Output() reminderData;
+  @Input() reminder: Reminder;
   colors = [ { name: 'Verde', }, { name: 'Amarillo', }, { name: 'Rojo', } ];
 
   constructor(
     public activeModal: NgbActiveModal,
     private formBuilder: FormBuilder,
+    private store: Store<AppState>
   ) { }
 
   reminderForm: FormGroup = this.formBuilder.group({
@@ -31,16 +35,17 @@ export class ModalComponent implements OnInit {
     'color': ['', [
       Validators.required
     ]],
-    'text': ['', [
+    'description': ['', [
     ]]
   });
 
   ngOnInit(): void {
+
   }
 
-  saveReminder() {
-    console.log('formData::', this.reminderForm.value);
-
+  addReminder() {
+    const action = new AddReminder(this.reminderForm.value);
+    this.store.dispatch(action);
   }
 
 }

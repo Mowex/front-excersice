@@ -1,15 +1,15 @@
-<form [formGroup]="reminderForm" (ngSubmit)="saveReminder()" class="form-line-input">
+<form [formGroup]="reminderForm" (ngSubmit)="addReminder()" class="form-line-input">
   <div class="modal-header">
     <h4 class="modal-title">Agregar recordatorio</h4>
   </div>
   <div class="modal-body">
     <div class="mb-3">
       <label for="citu" class="form-label">Ciudad</label>
-      <input type="text" class="form-control" name="city">
+      <input type="text" class="form-control" name="city" formControlName="city">
     </div>
     <div class="mb-3">
       <label for="color" class="form-label">Color</label>
-      <select name="color" class="form-control">
+      <select name="color" class="form-control" formControlName="color">
         <option *ngFor="let color of colors" [value]="color.name">{{ color.name }}</option>
       </select>
     </div>
@@ -20,6 +20,10 @@
     <div class="mb-3">
       <label for="exampleInputPassword1" class="form-label">Fecha</label>
       <input type="time" class="form-control" name="time" formControlName="time" />
+    </div>
+    <div class="mb-3">
+      <label for="exampleInputPassword1" class="form-label">Descripción</label>
+      <textarea name="description" formControlName="description" class="form-control"></textarea>
     </div>
   </div>
   <div class="modal-footer">
