@@ -5,11 +5,12 @@ import { Reminder } from '../classes/reminder';
 export function reminderReducer(state: Reminder[] = [], action: actions) {
   switch (action.type) {
     case ADDREMINDER:
-      return [...state, action.payload];
+      return [...state, action.payload]
     case EDITREMINDER:
-      return state;
+      return state.map(reminder =>
+        reminder.id === action.payload.id ? action.payload : reminder)
     case DELETEREMINDER:
-      return state;
+      return state.filter(reminder => reminder.id !== action.payload.id)
     default:
       return state;
   }

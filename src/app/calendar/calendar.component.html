@@ -11,22 +11,20 @@
   <ol>
     <li *ngFor="let day of week" class="day-name">{{day | slice:0:3 | titlecase}}</li>
 
-    <li class="day" (click)="clickDay(day)" [style.gridColumnStart]="first ? day?.indexWeek : 'auto'"
+    <li class="day" [style.gridColumnStart]="first ? day?.indexWeek : 'auto'"
       *ngFor="let day of monthSelect;let first = first">
       <span>{{day?.value}}</span>
+      <div *ngIf="!!day.reminders">
+        <div *ngFor="let reminder of day.reminders" [ngStyle]="{'background-color': reminder.color}" class="reminder" (click)="openModal(reminder)"></div>
+      </div>
     </li>
   </ol>
 </div>
 
-<div class="row">
+<div class="row mb-5">
   <div class="col-md-12 text-center">
     <button class="btn btn-primary btn-add" (click)="openModal()">
       <i class="bi bi-plus-circle"></i> Agergar evento
     </button>
   </div>
-</div>
-
-<hr>
-<div class="mb-5">
-  Fecha: {{dateValue | date}}
 </div>

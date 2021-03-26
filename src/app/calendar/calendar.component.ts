@@ -38,30 +38,35 @@ export class CalendarComponent implements OnInit {
     const numberDays = Math.round(diffDays);
 
     this.store.subscribe(state => {
-      console.log('state:::', state);
       this.reminders = state.reminders;
     })
-
-    // console.log('Object.keys([...Array(numberDays)])', [...Array(numberDays).keys()]);
 
     const arrayDays = Object.keys([...Array(numberDays)]).map((a: any) => {
       a = parseInt(a) + 1;
       const dayObject = moment(`${year}-${month}-${a}`);
-      const reminder = this.reminders.filter((reminder) => {
-        return a === parseInt(moment(reminder.date).format('D'))
-      })[0]
+      const reminders = [];
+      if (!!this.reminders){
+        this.reminders.map((rem) => {
+          const { date: { singleDate: { formatted } } } = rem;
+          // console.log(`a: ${a} day: ${parseInt(moment(formatted).format('D'))} `);
+          if (a === parseInt(moment(formatted).format('D')) &&
+              month === parseInt(moment(formatted).format('M')) &&
+              year === parseInt(moment(formatted).format('YYYY'))) {
+            reminders.push(rem);
+          }
+        })[0]
+      }
+
+      const sortReminder = reminders.sort((a, b) => a.time.localeCompare(b.time));
 
       return {
         name: dayObject.format("dddd"),
         value: a,
         indexWeek: dayObject.isoWeekday(),
-        reminder: reminder || null
+        reminders: !!sortReminder.length ? reminders : null
       };
     });
 
-    console.log('arrayDays:::', arrayDays);
-
-    console.log('arrayDays', arrayDays);
     this.monthSelect = arrayDays;
   }
 
@@ -75,15 +80,11 @@ export class CalendarComponent implements OnInit {
     }
   }
 
-  clickDay(day) {
-    const monthYear = this.dateSelect.format('YYYY-MM')
-    const parse = `${monthYear}-${day.value}`
-    const objectDate = moment(parse)
-    this.dateValue = objectDate;
-  }
-
-  openModal() {
+  openModal(reminder = null) {
     const modalRef = this.modalService.open(ModalComponent, { centered: true });
+    if (!!reminder) {
+      modalRef.componentInstance.reminder = reminder;
+    }
   }
 
 }

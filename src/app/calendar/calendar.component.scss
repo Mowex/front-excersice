@@ -24,7 +24,6 @@
     li {
       padding: .25rem;
       font-size: 1.5ch;
-      cursor: pointer;
 
       &.day {
         height: 150px;
@@ -34,6 +33,16 @@
 
       &:hover {
         font-weight: 600;
+      }
+
+      .reminder {
+        width: 10px;
+        height: 10px;
+        border-radius: 50px;
+        border: solid 1px black;
+        cursor: pointer;
+        display: inline-block;
+        margin: 2px;
       }
     }
 

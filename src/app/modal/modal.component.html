@@ -1,6 +1,6 @@
 <form [formGroup]="reminderForm" (ngSubmit)="addReminder()" class="form-line-input">
   <div class="modal-header">
-    <h4 class="modal-title">Agregar recordatorio</h4>
+    <h4 class="modal-title">{{ title }}</h4>
   </div>
   <div class="modal-body">
     <div class="mb-3">
@@ -10,7 +10,7 @@
     <div class="mb-3">
       <label for="color" class="form-label">Color</label>
       <select name="color" class="form-control" formControlName="color">
-        <option *ngFor="let color of colors" [value]="color.name">{{ color.name }}</option>
+        <option *ngFor="let color of colors" [value]="color.value">{{ color.name }}</option>
       </select>
     </div>
     <div class="mb-3">
@@ -28,6 +28,6 @@
   </div>
   <div class="modal-footer">
     <button type="button" class="btn btn-outline-dark" (click)="activeModal.close('Close click')">Cerrar</button>
-    <button type="submit" class="btn btn-outline-primary">Guardar</button>
+    <button type="submit" class="btn btn-outline-primary" [disabled]="!reminderForm.valid || !reminderForm.dirty">Guardar</button>
   </div>
 </form>
