@@ -4,26 +4,126 @@
   </div>
   <div class="modal-body">
     <div class="mb-3">
-      <label for="citu" class="form-label">Ciudad</label>
-      <input type="text" class="form-control" name="city" formControlName="city">
+      <label for="title" class="form-label">Título</label>
+      <input type="text"
+        class="form-control"
+        [ngClass]="{
+          'is-invalid': !!reminderForm.controls['title'].errors && (reminderForm.controls['title'].dirty && reminderForm.controls['title'].touched),
+          'is-valid': !reminderForm.controls['title'].errors && (reminderForm.controls['title'].dirty && reminderForm.controls['title'].touched)
+        }"
+        name="title"
+        placeholder="Recordatorio de pelicula..."
+        formControlName="title"
+      >
+      <span *ngIf="!!reminderForm.controls['title'].errors &&
+                  (reminderForm.controls['title'].dirty && reminderForm.controls['title'].touched)"
+            class="help-block text-danger"
+      >
+        El título debe contener entre 3 y 30 caracteres
+      </span>
+    </div>
+    <div class="mb-3">
+      <label for="city" class="form-label">Ciudad</label>
+      <input
+        type="text"
+        class="form-control"
+        name="city"
+        placeholder="CDMX, Guadalajara..."
+        formControlName="city"
+        [ngClass]="{
+          'is-invalid': !!reminderForm.controls['city'].errors && (reminderForm.controls['city'].dirty && reminderForm.controls['city'].touched),
+          'is-valid': !reminderForm.controls['city'].errors && (reminderForm.controls['city'].dirty && reminderForm.controls['city'].touched)
+        }"
+      >
+      <span *ngIf="!!reminderForm.controls['city'].errors &&
+                        (reminderForm.controls['city'].dirty && reminderForm.controls['city'].touched)"
+            class="help-block text-danger"
+      >
+        El campo de ciudad es un campo requerido
+      </span>
     </div>
     <div class="mb-3">
       <label for="color" class="form-label">Color</label>
-      <select name="color" class="form-control" formControlName="color">
+      <select
+        name="color"
+        class="form-control"
+        formControlName="color"
+        [ngClass]="{
+          'is-invalid': !!reminderForm.controls['color'].errors && (reminderForm.controls['color'].dirty && reminderForm.controls['color'].touched),
+          'is-valid': !reminderForm.controls['color'].errors && (reminderForm.controls['color'].dirty && reminderForm.controls['color'].touched)
+        }"
+      >
+        <option value="">Seleccione color del recordatorio...</option>
         <option *ngFor="let color of colors" [value]="color.value">{{ color.name }}</option>
       </select>
+      <span *ngIf="!!reminderForm.controls['color'].errors &&
+                              (reminderForm.controls['color'].dirty && reminderForm.controls['color'].touched)"
+        class="help-block text-danger">
+        El campo de Color es un campo requerido
+      </span>
     </div>
     <div class="mb-3">
       <label for="exampleInputPassword1" class="form-label">Fecha</label>
-      <input class="form-control" angular-mydatepicker name="date" formControlName="date" #dp="angular-mydatepicker" autocomplete="off" (click)="dp.toggleCalendar()" />
+      <input
+        class="form-control"
+        placeholder="DD-MM-YYYY"
+        angular-mydatepicker
+        name="date"
+        formControlName="date"
+        #dp="angular-mydatepicker"
+        autocomplete="off"
+        (click)="dp.toggleCalendar()"
+        (keypress)="dp.toggleCalendar()"
+        [ngClass]="{
+          'is-invalid': !!reminderForm.controls['date'].errors && (reminderForm.controls['date'].dirty && reminderForm.controls['date'].touched),
+          'is-valid': !reminderForm.controls['date'].errors && (reminderForm.controls['date'].dirty && reminderForm.controls['date'].touched)
+        }"
+      />
+      <span *ngIf="!!reminderForm.controls['date'].errors &&
+            (reminderForm.controls['date'].dirty && reminderForm.controls['date'].touched)"
+            class="help-block text-danger"
+      >
+        El campo de Fecha es un campo requerido
+      </span>
     </div>
     <div class="mb-3">
-      <label for="exampleInputPassword1" class="form-label">Fecha</label>
-      <input type="time" class="form-control" name="time" formControlName="time" />
+      <label for="exampleInputPassword1" class="form-label">Hora</label>
+      <input
+        type="time"
+        class="form-control"
+        name="time"
+        formControlName="time"
+        [ngClass]="{
+          'is-invalid': !!reminderForm.controls['time'].errors && (reminderForm.controls['time'].dirty && reminderForm.controls['time'].touched),
+          'is-valid': !reminderForm.controls['time'].errors && (reminderForm.controls['time'].dirty && reminderForm.controls['time'].touched)
+        }"
+      />
+      <span *ngIf="!!reminderForm.controls['date'].errors &&
+                  (reminderForm.controls['date'].dirty && reminderForm.controls['date'].touched)"
+        class="help-block text-danger">
+        El campo de Hora es un campo requerido
+      </span>
     </div>
     <div class="mb-3">
       <label for="exampleInputPassword1" class="form-label">Descripción</label>
-      <textarea name="description" formControlName="description" class="form-control"></textarea>
+      <textarea
+        name="description"
+        formControlName="description"
+        placeholder="Descripción del recordatorio"
+        class="form-control"
+        [ngClass]="{
+          'is-invalid': !!reminderForm.controls['description'].errors && (reminderForm.controls['description'].dirty && reminderForm.controls['description'].touched),
+          'is-valid': !reminderForm.controls['description'].errors && (reminderForm.controls['description'].dirty && reminderForm.controls['description'].touched)
+        }"
+      ></textarea>
+      <span *ngIf="!!reminderForm.controls['description'].errors &&
+                        (reminderForm.controls['description'].dirty && reminderForm.controls['description'].touched)"
+        class="help-block text-danger">
+        El campo de Descripción debe contener un minimo de 3 caracteres
+      </span>
+    </div>
+    <div class="mb-3 text-center" *ngIf="!!reminder">
+      <button type="button" class="btn btn-danger" (click)="confirmDeleteReminder()">Eliminar este recordatorio</button>
     </div>
   </div>
   <div class="modal-footer">

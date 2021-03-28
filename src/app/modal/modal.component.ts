@@ -1,11 +1,12 @@
-import { Component, OnInit, Input, Output } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Reminder } from '../classes/reminder';
-import { Action, Store } from '@ngrx/store';
+import { Store } from '@ngrx/store';
 import { AppState } from '../classes/appState';
-import { AddReminder, EditReminder } from '../actions/reminder.actions';
-import { ActivatedRoute, Router } from '@angular/router';
+import { AddReminder, EditReminder, DeleteReminder } from '../actions/reminder.actions';
+import {  Router } from '@angular/router';
+import Swal from 'sweetalert2'
 
 @Component({
   selector: 'app-modal',
@@ -26,12 +27,16 @@ export class ModalComponent implements OnInit {
     public activeModal: NgbActiveModal,
     private formBuilder: FormBuilder,
     private store: Store<AppState>,
-    private route: ActivatedRoute,
     private router: Router
   ) { }
 
   reminderForm: FormGroup = this.formBuilder.group({
     'id': ['', [ ]],
+    'title': ['', [
+      Validators.required,
+      Validators.minLength(3),
+      Validators.maxLength(30)
+    ]],
     'city': ['', [
       Validators.required,
     ]],
@@ -45,8 +50,7 @@ export class ModalComponent implements OnInit {
       Validators.required
     ]],
     'description': ['', [
-      Validators.minLength(3),
-      Validators.maxLength(30)
+      Validators.minLength(3)
     ]]
   });
 
@@ -55,6 +59,7 @@ export class ModalComponent implements OnInit {
     if (!!this.reminder) {
       const dataControls = this.reminderForm.controls;
       dataControls.id.setValue(this.reminder.id);
+      dataControls.title.setValue(this.reminder.title);
       dataControls.city.setValue(this.reminder.city);
       dataControls.date.setValue(this.reminder.date);
       dataControls.time.setValue(this.reminder.time);
@@ -73,12 +78,37 @@ export class ModalComponent implements OnInit {
       const action = new AddReminder(this.reminderForm.value);
       this.store.dispatch(action);
     }
+    this.reloadCalendar();
+    this.activeModal.close();
+  }
 
+  confirmDeleteReminder() {
+    Swal.fire({
+      title: 'Eliminar recordatorio',
+      text: "¿Desea borrar este recordatorio? Esta acción es irreversible",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Eliminar!'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.deleteReminder();
+      }
+    })
+  }
+
+  deleteReminder() {
+    const action = new DeleteReminder(this.reminder);
+    this.store.dispatch(action);
+    this.reloadCalendar();
+    this.activeModal.close();
+  }
+
+  reloadCalendar() {
     let currentUrl = this.router.url;
     this.router.routeReuseStrategy.shouldReuseRoute = () => false;
     this.router.onSameUrlNavigation = 'reload';
     this.router.navigate([currentUrl]);
-
-    this.activeModal.close();
   }
 }

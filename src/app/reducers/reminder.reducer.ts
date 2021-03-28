@@ -1,4 +1,4 @@
-import { ADDREMINDER, EDITREMINDER, DELETEREMINDER, actions } from "../actions/reminder.actions";
+import { ADDREMINDER, EDITREMINDER, DELETEREMINDER, DELETEALLREMINDERS,  actions } from "../actions/reminder.actions";
 import { Reminder } from '../classes/reminder';
 
 
@@ -11,6 +11,8 @@ export function reminderReducer(state: Reminder[] = [], action: actions) {
         reminder.id === action.payload.id ? action.payload : reminder)
     case DELETEREMINDER:
       return state.filter(reminder => reminder.id !== action.payload.id)
+    case DELETEALLREMINDERS:
+      return []
     default:
       return state;
   }

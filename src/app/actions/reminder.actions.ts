@@ -4,6 +4,7 @@ import { Reminder } from "../classes/reminder";
 export const ADDREMINDER = '[Reminder] Add';
 export const EDITREMINDER = '[Reminder] Edit';
 export const DELETEREMINDER = '[Reminder] Delete';
+export const DELETEALLREMINDERS = '[Reminder] Delete Reminders';
 
 export class AddReminder implements Action {
   readonly type = ADDREMINDER;
@@ -29,4 +30,8 @@ export class DeleteReminder implements Action {
   }
 }
 
-export type actions = AddReminder | EditReminder | DeleteReminder;
+export class DeleteAllReminders implements Action {
+  readonly type = DELETEALLREMINDERS;
+}
+
+export type actions = AddReminder | EditReminder | DeleteReminder | DeleteAllReminders;
