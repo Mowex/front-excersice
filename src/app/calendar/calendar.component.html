@@ -17,11 +17,14 @@
       <div *ngIf="!!day.reminders">
         <div *ngFor="let reminder of day.reminders" [ngStyle]="{'background-color': reminder.color}" class="reminder" (click)="openModal(reminder)"></div>
       </div>
+      <div *ngIf="!!day.weatherByDay" class="img-weather" (click)="showWeatherDetail(day.weatherByDay)">
+        <img  [src]="getImageIcon(day)" alt="" >
+      </div>
     </li>
   </ol>
 </div>
 
-<div class="row mb-5">
+<div class="row mb-5" *ngIf="!!reminders">
   <div class="col-md-12 text-center mx-5">
     <button class="btn btn-danger btn-add mx-5" (click)="confirmDeleteReminders()" [disabled]="!reminders.length">
       <i class="bi bi-trash"></i> Eliminar todos los recordatorios

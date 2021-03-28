@@ -74,6 +74,7 @@
         autocomplete="off"
         (click)="dp.toggleCalendar()"
         (keypress)="dp.toggleCalendar()"
+        [options]="myDatePickerOptions"
         [ngClass]="{
           'is-invalid': !!reminderForm.controls['date'].errors && (reminderForm.controls['date'].dirty && reminderForm.controls['date'].touched),
           'is-valid': !reminderForm.controls['date'].errors && (reminderForm.controls['date'].dirty && reminderForm.controls['date'].touched)

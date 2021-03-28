@@ -5,8 +5,11 @@ import { Reminder } from '../classes/reminder';
 import { Store } from '@ngrx/store';
 import { AppState } from '../classes/appState';
 import { AddReminder, EditReminder, DeleteReminder } from '../actions/reminder.actions';
-import {  Router } from '@angular/router';
+import { Router } from '@angular/router';
 import Swal from 'sweetalert2'
+import { IAngularMyDpOptions } from 'angular-mydatepicker';
+import * as moment from 'moment'
+import 'moment/locale/es'
 
 @Component({
   selector: 'app-modal',
@@ -17,11 +20,15 @@ export class ModalComponent implements OnInit {
 
   @Input() reminder: Reminder;
   title: string;
+  reminderForm: FormGroup;
   colors = [
     { name: 'Verde', value: 'green' },
     { name: 'Amarillo', value: 'yellow' },
     { name: 'Rojo',  value: 'red' }
   ];
+  myDatePickerOptions: IAngularMyDpOptions = {
+    disableUntil: { year: moment().year(), month: moment().month() + 1, day: moment().date() -1 },
+  };
 
   constructor(
     public activeModal: NgbActiveModal,
@@ -30,32 +37,32 @@ export class ModalComponent implements OnInit {
     private router: Router
   ) { }
 
-  reminderForm: FormGroup = this.formBuilder.group({
-    'id': ['', [ ]],
-    'title': ['', [
-      Validators.required,
-      Validators.minLength(3),
-      Validators.maxLength(30)
-    ]],
-    'city': ['', [
-      Validators.required,
-    ]],
-    'date': ['', [
-      Validators.required,
-    ]],
-    'time': ['', [
-      Validators.required,
-    ]],
-    'color': ['', [
-      Validators.required
-    ]],
-    'description': ['', [
-      Validators.minLength(3)
-    ]]
-  });
-
   ngOnInit(): void {
     this.title = 'Agregar Recordatorio';
+    this.reminderForm = this.formBuilder.group({
+      'id': ['', []],
+      'title': ['', [
+        Validators.required,
+        Validators.minLength(3),
+        Validators.maxLength(30)
+      ]],
+      'city': ['', [
+        Validators.required,
+      ]],
+      'date': ['', [
+        Validators.required,
+      ]],
+      'time': ['', [
+        Validators.required,
+      ]],
+      'color': ['', [
+        Validators.required
+      ]],
+      'description': ['', [
+        Validators.minLength(3)
+      ]]
+    });
+
     if (!!this.reminder) {
       const dataControls = this.reminderForm.controls;
       dataControls.id.setValue(this.reminder.id);
