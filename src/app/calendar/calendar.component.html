@@ -13,11 +13,11 @@
 
     <li class="day" [style.gridColumnStart]="first ? day?.indexWeek : 'auto'"
       *ngFor="let day of monthSelect; let first = first">
-      <span>{{day?.value}}</span>
+      <strong (click)="!!day.reminders ? showRemindersDay(day) : false" [ngStyle]="{'cursor': !!day.reminders ? 'pointer' : 'auto'}">{{day?.value}}</strong>
       <div *ngIf="!!day.reminders">
         <div *ngFor="let reminder of day.reminders" [ngStyle]="{'background-color': reminder.color}" class="reminder" (click)="openModal(reminder)"></div>
       </div>
-      <div *ngIf="!!day.weatherByDay" class="img-weather" (click)="showWeatherDetail(day.weatherByDay)">
+      <div *ngIf="!!day.weatherByDay" class="img-weather" (click)="showWeatherDetail(day)">
         <img  [src]="getImageIcon(day)" alt="" >
       </div>
     </li>

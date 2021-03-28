@@ -25,6 +25,7 @@ export class CalendarComponent implements OnInit {
   baseUrlIcon: string;
   WeatherForecast: any[];
   weatherByDay: any;
+  localState: Reminder[];
 
   constructor(
     public modalService: NgbModal,
@@ -46,7 +47,7 @@ export class CalendarComponent implements OnInit {
     const numberDays = Math.round(diffDays);
 
     this.store.subscribe(state => {
-      this.reminders = state.reminders;
+      this.reminders = !!state.reminders ? state.reminders : JSON.parse(localStorage.getItem('reminders'));
     })
 
     const arrayDays = Object.keys([...Array(numberDays)]).map((a: any) => {
@@ -80,7 +81,7 @@ export class CalendarComponent implements OnInit {
       const sortReminder = reminders.sort((a, b) => a.time.localeCompare(b.time));
 
       return {
-        name: dayObject.format("dddd"),
+        name: dayObject.format("D"),
         value: a,
         indexWeek: dayObject.isoWeekday(),
         reminders: !!sortReminder.length ? reminders : null,
@@ -95,9 +96,13 @@ export class CalendarComponent implements OnInit {
     if (flag < 0) {
       const prevDate = this.dateSelect.clone().subtract(1, "month");
       this.getDaysFromDate(parseInt(prevDate.format("MM")), parseInt(prevDate.format("YYYY")));
+      localStorage.setItem('month', prevDate.format("MM"));
+      localStorage.setItem('year', prevDate.format("YYYY"));
     } else {
       const nextDate = this.dateSelect.clone().add(1, "month");
       this.getDaysFromDate(parseInt(nextDate.format("MM")), parseInt(nextDate.format("YYYY")));
+      localStorage.setItem('month', nextDate.format("MM"));
+      localStorage.setItem('year', nextDate.format("YYYY"));
     }
   }
 
@@ -133,8 +138,12 @@ export class CalendarComponent implements OnInit {
   getWeather() {
     this.restApi.getWeather().subscribe((data: any) => {
       const { daily } = data;
-      const month = !!this.dateSelect ? this.dateSelect.format('M') : (moment().month() + 1);
-      const year = !!this.dateSelect ? this.dateSelect.format('Y') : moment().year();
+      const storageMonth = !!localStorage.getItem('month') ? localStorage.getItem('month') : (moment().month() + 1);
+      const storageYear = !!localStorage.getItem('year') ? localStorage.getItem('year') : moment().year();
+      const month = !!this.dateSelect ? this.dateSelect.format('MM') : storageMonth;
+      const year = !!this.dateSelect ? this.dateSelect.format('YYYY') : storageYear;
+      localStorage.setItem('month', month);
+      localStorage.setItem('year', year);
       this.WeatherForecast = daily
       this.getDaysFromDate(parseInt(month), parseInt(year));
     }, (error: HttpErrorResponse) => {
@@ -150,19 +159,40 @@ export class CalendarComponent implements OnInit {
     return `${this.baseUrlIcon}${day.weatherByDay.weather[0].icon}@2x.png`;
   }
 
-  showWeatherDetail(weather: any) {
+  showWeatherDetail(day: any) {
     Swal.fire({
-      title: '<strong>Detalle del clima</strong>',
+      title: `<strong>Detalle del clima</strong>`,
       icon: 'info',
       html: `
       <div>
-        <div><strong>Descripción: </strong> ${weather.weather[0].description}  </div>
-        <div><strong>Humedad: </strong> ${weather.humidity}%  </div>
-        <div><strong>Max: </strong> ${weather.temp.max}°  </div>
-        <div><strong>Mix: </strong> ${weather.temp.min}°  </div>
+      <img src="${this.getImageIcon(day)}" width="15%" />
+        <div><strong>Descripción: </strong> ${day.weatherByDay.weather[0].description}  </div>
+        <div><strong>Humedad: </strong> ${day.weatherByDay.humidity}%  </div>
+        <div><strong>Max: </strong> ${day.weatherByDay.temp.max}°  </div>
+        <div><strong>Mix: </strong> ${day.weatherByDay.temp.min}°  </div>
       </div>`,
       focusConfirm: false,
       confirmButtonText: '<i class="bi bi-hand-thumbs-up"></i> Genial!'
+    })
+  }
+
+  showRemindersDay(day: any): void {
+    let htmlReminders = '';
+    day.reminders.map((reminder: Reminder) => {
+      htmlReminders += `
+        <div>
+          <strong>Recordatorio:</strong> ${reminder.title}
+          <i class="bi bi-calendar-event-fill" style="color: ${reminder.color}"></i>
+        </div>
+      `
+    })
+
+    Swal.fire({
+      title: `<strong>Recordatorios del día: ${day.value}</strong>`,
+      icon: 'info',
+      html: ` <div> ${htmlReminders} </div>`,
+      focusConfirm: false,
+      confirmButtonText: 'Aceptar'
     })
   }
 }
